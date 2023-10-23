@@ -20,9 +20,9 @@ server_socket.listen()
 user_threadingLock = threading.Lock()  #数据打印线程锁
 
 def Handle_DATA(client_address, message):
-    #拿锁
-    user_threadingLock.acquire(timeout=60)
     try:
+        #拿锁
+        user_threadingLock.acquire(timeout=60)
         #帧头
         if message[0] == 0xA5 and message[1] == 0x5A :
             print("Upload time: " + time.strftime("%Y-%m-%d %H:%M:%S"),flush=True)
@@ -93,10 +93,13 @@ def Handle_DATA(client_address, message):
             print("  数据记录总数: " + str(message[64] << 8 | message[65]) + "次",flush=True)
             #原始数据
             print("      原始数据: " + message.hex(' ') + '\n',flush=True)
+
+        #释放锁
+        user_threadingLock.release()
     except:
         print("!数据不完整或非协议内容!",flush=True)
-    #释放锁
-    user_threadingLock.release()
+        #释放锁
+        user_threadingLock.release()
 
 
 print(f'Server is listening at {HOST}:{PORT}',flush=True)
