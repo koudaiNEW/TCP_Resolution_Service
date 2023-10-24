@@ -63,7 +63,7 @@ def Handle_DATA(client_address, message):
             #信号强度
             print("      信号强度: " + str(message[51]),flush=True)
             #报警状态
-            fault = "未知"
+            fault = "无"
             if message[52] == 0x01 :
                 fault = "IIC故障"
             elif message[52] == 0x02 :
@@ -115,7 +115,11 @@ def Listen_TCP() :
 
 if __name__ == '__main__':
     while True :
-        Listen_TCP()
+        try :
+            Listen_TCP()
+        except :
+            print("未知错误",flush=True)
+        
     
 
  
